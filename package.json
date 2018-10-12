@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "next",
+    "dev": "next -p 3001",
     "start": "next start",
     "build": "next build"
   },
@@ -19,6 +19,7 @@
     "eslint": "^4.19.1"
   },
   "devDependencies": {
+    "babel-eslint": "^7.2.3",
     "eslint-config-airbnb": "^16.1.0",
     "eslint-plugin-async-await": "0.0.0",
     "eslint-plugin-import": "^2.11.0",
