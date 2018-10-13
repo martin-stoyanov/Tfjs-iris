@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Table, TableHeader, TableRow, TableCell, TableBody } from 'grommet';
+import { Grommet, Box, Table, TableHeader, TableRow, TableCell, TableBody, Button } from 'grommet';
 import * as tf from '@tensorflow/tfjs';
 import * as hpjs from 'hyperparameters';
 import iris from '../data/iris-training';
@@ -12,11 +12,6 @@ class Index extends React.Component {
     this.state = {
       formattedPredictions: [],
     };
-  }
-
-
-  componentDidMount() {
-    this.trainAndPredict();
   }
 
   arrayto2dArray = (array, size) => {
@@ -33,24 +28,14 @@ class Index extends React.Component {
   optFunction = async ({ numLayers }, { trainingData, outputData }) => {
     const model = tf.sequential();
 
-    model.add(tf.layers.dense({
-      inputShape: [4],
-      activation: 'sigmoid',
-      units: 5,
-    }));
-
     console.log(numLayers);
     for (let i = 0; i < numLayers; i += 1) {
       model.add(tf.layers.dense({
+        inputShape: i === 0 ? [4] : [5], // if first layer
         activation: 'sigmoid',
-        units: 3,
+        units: i === numLayers - 1 ? 3 : 5,
       }));
     }
-
-    model.add(tf.layers.dense({
-      activation: 'sigmoid',
-      units: 3,
-    }));
 
     model.compile({
       loss: 'meanSquaredError',
@@ -90,7 +75,7 @@ class Index extends React.Component {
 
     const trials = await hpjs.fmin(
       this.optFunction, space, hpjs.search.randomSearch, 3,
-      { rng: new hpjs.RandomState(654321), trainingData, outputData }
+      { rng: new hpjs.RandomState(64321), trainingData, outputData }
     );
 
     const opt = trials.argmin;
@@ -116,26 +101,32 @@ class Index extends React.Component {
   render() {
     const { formattedPredictions } = this.state;
     return (
-      <Box>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableCell size='xxsmall' scope='col' border='bottom'><b>Setosa</b></TableCell>
-              <TableCell size='xxsmall' scope='col' border='bottom'><b>Virginica</b></TableCell>
-              <TableCell size='xxsmall' scope='col' border='bottom'><b>Versicolor</b></TableCell>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {formattedPredictions.map((e, index) => (
-              <TableRow key={`predictions_${index}`}>
-                <TableCell size='xxsmall' scope='row'>{e[0]}</TableCell>
-                <TableCell size='xxsmall' scope='row'>{e[1]}</TableCell>
-                <TableCell size='xxsmall' scope='row'>{e[2]}</TableCell>
+      <Grommet>
+        <Box direction='column' align='center' gap='medium'>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableCell size='xsmall' scope='col' border='bottom'><b>Setosa</b></TableCell>
+                <TableCell size='xsmall' scope='col' border='bottom'><b>Virginica</b></TableCell>
+                <TableCell size='xsmall' scope='col' border='bottom'><b>Versicolor</b></TableCell>
               </TableRow>
-              ))}
-          </TableBody>
-        </Table>
-      </Box>
+            </TableHeader>
+            <TableBody>
+              {formattedPredictions.map((e, index) => (
+                <TableRow key={`predictions_${index}`}>
+                  <TableCell size='xxsmall' scope='row'>{e[0]}</TableCell>
+                  <TableCell size='xxsmall' scope='row'>{e[1]}</TableCell>
+                  <TableCell size='xxsmall' scope='row'>{e[2]}</TableCell>
+                </TableRow>
+                ))}
+            </TableBody>
+          </Table>
+          <Button
+            label='Start Training'
+            onClick={this.trainAndPredict}
+          />
+        </Box>
+      </Grommet>
     );
   }
 }
