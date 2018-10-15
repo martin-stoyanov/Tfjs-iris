@@ -73,6 +73,10 @@ class Index extends React.Component {
       item.sepal_length, item.sepal_width, item.petal_length, item.petal_width,
     ]));
 
+    const testingOutput = irisTesting.map(item => [
+      item.species,
+    ]);
+
     const trials = await hpjs.fmin(
       this.optFunction, space, hpjs.search.randomSearch, 3,
       { rng: new hpjs.RandomState(64321), trainingData, outputData }
@@ -88,14 +92,17 @@ class Index extends React.Component {
 
     const formattedArray = [];
     for (let i = 0; i < predictions.length; i += 3) {
-      formattedArray.push(predictions.slice(i, i + 3));
+      let row = predictions.slice(i, i + 3); // adding testing predictions to array
+      row = Array.prototype.slice.call(row);
+      row[3] = testingOutput[i / 3]; // adding testing answers to array
+      formattedArray.push(row);
     }
+
     this.setState({
       formattedPredictions: formattedArray, // eslint-disable-line react/no-unused-state
     });
-
-    // console.log(`predictions: ${predictions}`);
-    // console.log(`irisTesting: ${irisTesting}`);
+    
+    console.log(formattedArray);
   }
 
   render() {
@@ -109,6 +116,7 @@ class Index extends React.Component {
                 <TableCell size='xsmall' scope='col' border='bottom'><b>Setosa</b></TableCell>
                 <TableCell size='xsmall' scope='col' border='bottom'><b>Virginica</b></TableCell>
                 <TableCell size='xsmall' scope='col' border='bottom'><b>Versicolor</b></TableCell>
+                <TableCell size='xsmall' scope='col' border='bottom'><b>Actual</b></TableCell>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -117,6 +125,7 @@ class Index extends React.Component {
                   <TableCell size='xxsmall' scope='row'>{e[0]}</TableCell>
                   <TableCell size='xxsmall' scope='row'>{e[1]}</TableCell>
                   <TableCell size='xxsmall' scope='row'>{e[2]}</TableCell>
+                  <TableCell size='xxsmall' scope='row'>{e[3]}</TableCell>
                 </TableRow>
                 ))}
             </TableBody>
