@@ -7,12 +7,14 @@ import irisTesting from '../data/iris-testing';
 
 let predictions;
 const lossArr = [];
+const numLayersArr = [];
 class Index extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       formattedPredictions: [],
       lossArr: [],
+      numLayersArr: [],
     };
   }
 
@@ -31,6 +33,7 @@ class Index extends React.Component {
     const model = tf.sequential();
 
     console.log(numLayers);
+
     for (let i = 0; i < numLayers; i += 1) {
       model.add(tf.layers.dense({
         inputShape: i === 0 ? [4] : [5], // if first layer
@@ -47,11 +50,13 @@ class Index extends React.Component {
     const h = await model.fit(trainingData, outputData, { epochs: 100 });
     const loss = h.history.loss[h.history.loss.length - 1];
     lossArr.push(loss);
+    numLayersArr.push(numLayers);
+    console.log(numLayersArr);
 
     this.setState({
       lossArr, // eslint-disable-line react/no-unused-state
+      numLayersArr,
     });
-    console.log(lossArr);
 
     // return the model, loss, and status
     return {
@@ -119,7 +124,9 @@ class Index extends React.Component {
   }
 
   render() {
-    const { formattedPredictions, lossArr, numOptCalls } = this.state;
+    const {
+      formattedPredictions, lossArr, numOptCalls, numLayersArr, // eslint-disable-line
+    } = this.state;
     return (
       <Grommet>
         <Box direction='row' gap='medium'>
@@ -129,13 +136,15 @@ class Index extends React.Component {
               <TableHeader>
                 <TableRow>
                   <TableCell size='xsmall' scope='col' border='bottom'><b>Iteration</b></TableCell>
-                  <TableCell size='xsmall' scope='col' border='bottom'><b>Loss</b></TableCell>
+                  <TableCell size='xsmall' scope='col' border='bottom'><b># Layers</b></TableCell>
+                  <TableCell size='small' scope='col' border='bottom'><b>Loss</b></TableCell>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {lossArr.map((e, index) => (
                   <TableRow key={`loss_${index}`}>
-                    <TableCell size='small' scope='row'>{index + 1}</TableCell>
+                    <TableCell size='xsmall' scope='row'>{index + 1}</TableCell>
+                    <TableCell size='xsmall' scope='row'>{numLayersArr[index]}</TableCell>
                     <TableCell size='small' scope='row'>{e}</TableCell>
                   </TableRow>
                 ))}
