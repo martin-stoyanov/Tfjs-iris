@@ -129,7 +129,7 @@ class Index extends React.Component {
     } = this.state;
     return (
       <Grommet>
-        <Box direction='row' gap='medium'>
+        <Box direction='row-responsive' justify='center' gap='medium'>
           <Box direction='column' align='center' gap='xsmall' margin='small'>
             <Text weight='bold'># of OptFunction calls: {numOptCalls}</Text>
             <Table>
@@ -150,6 +150,11 @@ class Index extends React.Component {
                 ))}
               </TableBody>
             </Table>
+            <Button
+              label='Start Training'
+              onClick={this.trainAndPredict}
+              style={{ marginTop: '15px' }}
+            />
           </Box>
           <Box direction='column' align='center' gap='xsmall' margin='small'>
             <Text weight='bold'>Test Predictions</Text>
@@ -173,10 +178,6 @@ class Index extends React.Component {
                 ))}
               </TableBody>
             </Table>
-            <Button
-              label='Start Training'
-              onClick={this.trainAndPredict}
-            />
           </Box>
         </Box>
       </Grommet>
