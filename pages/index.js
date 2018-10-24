@@ -127,6 +127,7 @@ class Index extends React.Component {
     const {
       formattedPredictions, lossArr, numOptCalls, numLayersArr, // eslint-disable-line
     } = this.state;
+    console.log(lossArr);
     return (
       <Grommet>
         <Box direction='row-responsive' justify='center' gap='medium'>
@@ -150,6 +151,12 @@ class Index extends React.Component {
                 ))}
               </TableBody>
             </Table>
+            <Text>
+              Best # of Layers: {numLayersArr[numOptCalls]}
+            </Text>
+            <Text>
+              Loss: {lossArr[numOptCalls]}
+            </Text>
             <Button
               label='Start Training'
               onClick={this.trainAndPredict}
