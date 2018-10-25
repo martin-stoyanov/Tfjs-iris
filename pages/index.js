@@ -142,7 +142,7 @@ class Index extends React.Component {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {lossArr.map((e, index) => (
+                {lossArr.filter((e, index) => index < numOptCalls).map((e, index) => (
                   <TableRow key={`loss_${index}`}>
                     <TableCell size='xsmall' scope='row'>{index + 1}</TableCell>
                     <TableCell size='xsmall' scope='row'>{numLayersArr[index]}</TableCell>
