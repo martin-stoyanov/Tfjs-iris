@@ -174,10 +174,10 @@ class Index extends React.Component {
               <TableBody>
                 {formattedPredictions.map((e, index) => (
                   <TableRow key={`predictions_${index}`}>
-                    {console.log(e[3][0])}
-                    <TableCell size='xxsmall' scope='row'>{(e[3][0] === 'setosa' ? <Text weight='bold'>{e[0]}</Text> : e[0])}</TableCell>
-                    <TableCell size='xxsmall' scope='row'>{(e[3][0] === 'virginica' ? <Text weight='bold'>{e[1]}</Text> : e[1])}</TableCell>
-                    <TableCell size='xxsmall' scope='row'>{(e[3][0] === 'versicolor' ? <Text weight='bold'>{e[2]}</Text> : e[2])}</TableCell>
+                    {console.log(e[0])}
+                    <TableCell size='xxsmall' scope='row'>{(e[3][0] === 'setosa' ? e[0] < 0.5 ? <Text weight='bold' color='status-critical'>{e[0]}</Text> : <Text weight='bold'>{e[0]}</Text> : e[0])}</TableCell>
+                    <TableCell size='xxsmall' scope='row'>{(e[3][0] === 'virginica' ? e[1] < 0.5 ? <Text weight='bold' color='status-critical'>{e[1]}</Text> : <Text weight='bold'>{e[1]}</Text> : e[1])}</TableCell>
+                    <TableCell size='xxsmall' scope='row'>{(e[3][0] === 'versicolor' ? e[2] < 0.5 ? <Text weight='bold' color='status-critical'>{e[2]}</Text> : <Text weight='bold'>{e[2]}</Text> : e[2])}</TableCell>
                     <TableCell size='xxsmall' scope='row'>{e[3]}</TableCell>
                   </TableRow>
                 ))}
