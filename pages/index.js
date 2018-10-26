@@ -154,9 +154,6 @@ class Index extends React.Component {
             <Text>
               Best # of Layers: {numLayersArr[numOptCalls]}
             </Text>
-            <Text>
-              Loss: {lossArr[numOptCalls]}
-            </Text>
             <Button
               label='Start Training'
               onClick={this.trainAndPredict}
@@ -177,14 +174,18 @@ class Index extends React.Component {
               <TableBody>
                 {formattedPredictions.map((e, index) => (
                   <TableRow key={`predictions_${index}`}>
-                    <TableCell size='xxsmall' scope='row'>{e[0]}</TableCell>
-                    <TableCell size='xxsmall' scope='row'>{e[1]}</TableCell>
-                    <TableCell size='xxsmall' scope='row'>{e[2]}</TableCell>
+                    {console.log(e[3][0])}
+                    <TableCell size='xxsmall' scope='row'>{(e[3][0] === 'setosa' ? <Text weight='bold'>{e[0]}</Text> : e[0])}</TableCell>
+                    <TableCell size='xxsmall' scope='row'>{(e[3][0] === 'virginica' ? <Text weight='bold'>{e[1]}</Text> : e[1])}</TableCell>
+                    <TableCell size='xxsmall' scope='row'>{(e[3][0] === 'versicolor' ? <Text weight='bold'>{e[2]}</Text> : e[2])}</TableCell>
                     <TableCell size='xxsmall' scope='row'>{e[3]}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
             </Table>
+            <Text>
+              Testing Loss: {lossArr[numOptCalls]}
+            </Text>
           </Box>
         </Box>
       </Grommet>
