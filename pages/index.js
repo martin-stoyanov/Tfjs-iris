@@ -8,6 +8,12 @@ import irisTesting from '../data/iris-testing';
 let predictions;
 const lossArr = [];
 const numLayersArr = [];
+
+
+const TestHeader = ({ title }) => (
+  <TableCell size='xsmall' scope='col' border='bottom'><b>{title}</b></TableCell>
+);
+
 class Index extends React.Component {
   constructor(props) {
     super(props);
@@ -165,10 +171,9 @@ class Index extends React.Component {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableCell size='xsmall' scope='col' border='bottom'><b>Setosa</b></TableCell>
-                  <TableCell size='xsmall' scope='col' border='bottom'><b>Virginica</b></TableCell>
-                  <TableCell size='xsmall' scope='col' border='bottom'><b>Versicolor</b></TableCell>
-                  <TableCell size='xsmall' scope='col' border='bottom'><b>Actual</b></TableCell>
+                  {['Setosa', 'Virginica', 'Versicolor', 'Actual'].map(title => (
+                    <TestHeader title={title} key={`title_${title}`} />
+                  ))}
                 </TableRow>
               </TableHeader>
               <TableBody>
