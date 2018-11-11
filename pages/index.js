@@ -169,7 +169,6 @@ class Index extends React.Component {
                     onKeyPress={(e) => {
                       if (e.key === 'Enter') {
                         this.updateNumOptCalls();
-                        document.getElementById('item').value = '';
                       }
                     }}
                   />
