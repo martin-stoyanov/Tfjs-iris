@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grommet, Box, Table, TableHeader, TableRow, TableCell, TableBody, Button, Text } from 'grommet';
+import { Grommet, Box, FormField, Table, TableHeader, TableRow, TableCell, TableBody, Button, Text, TextInput } from 'grommet';
 import * as tf from '@tensorflow/tfjs';
 import * as hpjs from 'hyperparameters';
 import iris from '../data/iris-training';
@@ -9,6 +9,7 @@ let predictions;
 const lossArr = [];
 const numLayersArr = [];
 const optimizerArr = [];
+const numOptCalls = 3;
 
 
 const TestHeader = ({ title }) => (
@@ -23,7 +24,16 @@ class Index extends React.Component {
       lossArr: [],
       numLayersArr: [],
       optimizerArr: [],
+      numOptCalls: 3,
     };
+  }
+
+  updateNumOptCalls = () => {
+    console.log('updated');
+    const numCalls = document.getElementById('numOptCalls').value;
+    this.setState({
+      numOptCalls: numCalls, // eslint-disable-line react/no-unused-state
+    });
   }
 
   arrayto2dArray = (array, size) => {
@@ -47,8 +57,6 @@ class Index extends React.Component {
     };
 
     const model = tf.sequential(); // creating a simple model
-
-    console.log(numLayers);
 
     // adding random number of layers
     for (let i = 0; i < numLayers; i += 1) {
@@ -110,11 +118,10 @@ class Index extends React.Component {
       item.species,
     ]);
 
-    const numOptCalls = 3;
+    console.log(`numLayers: ${this.state.numOptCalls}`);
 
-    this.setState({ numOptCalls });
     const trials = await hpjs.fmin(
-      this.optFunction, space, hpjs.search.randomSearch, numOptCalls,
+      this.optFunction, space, hpjs.search.randomSearch, this.state.numOptCalls,
       { rng: new hpjs.RandomState(54321), trainingData, outputData }
     );
 
@@ -151,7 +158,27 @@ class Index extends React.Component {
       <Grommet>
         <Box direction='row-responsive' justify='center' gap='medium'>
           <Box direction='column' align='center' gap='xsmall' margin='small'>
-            <Text weight='bold'># of OptFunction calls: {numOptCalls}</Text>
+            <Box direction='row' align='center' gap='xsmall'>
+              <Text weight='bold'># of OptFunction calls: </Text>
+              <FormField>
+                <TextInput
+                    size = 'small'
+                    id='numOptCalls'
+                    name='numOptCalls'
+                    placeholder={numOptCalls.toString()}
+                    onKeyPress={(e) => {
+                      if (e.key === 'Enter') {
+                        this.updateNumOptCalls();
+                        document.getElementById('item').value = '';
+                      }
+                    }}
+                  />
+              </FormField>
+              <Button
+                  label='Update'
+                  onClick={this.updateNumOptCalls}
+                />
+            </Box>
             <Table>
               <TableHeader>
                 <TableRow>
