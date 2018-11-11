@@ -8,6 +8,7 @@ import irisTesting from '../data/iris-testing';
 let predictions;
 const lossArr = [];
 const numLayersArr = [];
+const optimizerArr = [];
 
 
 const TestHeader = ({ title }) => (
@@ -21,6 +22,7 @@ class Index extends React.Component {
       formattedPredictions: [],
       lossArr: [],
       numLayersArr: [],
+      optimizerArr: [],
     };
   }
 
@@ -35,11 +37,20 @@ class Index extends React.Component {
   };
 
 
-  optFunction = async ({ numLayers }, { trainingData, outputData }) => {
-    const model = tf.sequential();
+  optFunction = async ({ numLayers, optimizer }, { trainingData, outputData }) => {
+    const optimizers = {
+      sgd: tf.train.sgd,
+      adagrad: tf.train.adagrad,
+      adam: tf.train.adam,
+      adamax: tf.train.adamax,
+      rmsprop: tf.train.rmsprop,
+    };
+
+    const model = tf.sequential(); // creating a simple model
 
     console.log(numLayers);
 
+    // adding random number of layers
     for (let i = 0; i < numLayers; i += 1) {
       model.add(tf.layers.dense({
         inputShape: i === 0 ? [4] : [5], // if first layer
@@ -50,18 +61,19 @@ class Index extends React.Component {
 
     model.compile({
       loss: 'meanSquaredError',
-      optimizer: tf.train.adam(0.06),
+      optimizer: optimizers[optimizer](0.06),
     });
 
     const h = await model.fit(trainingData, outputData, { epochs: 100 });
     const loss = h.history.loss[h.history.loss.length - 1];
     lossArr.push(loss);
     numLayersArr.push(numLayers);
-    console.log(numLayersArr);
+    optimizerArr.push(optimizer);
 
     this.setState({
       lossArr, // eslint-disable-line react/no-unused-state
       numLayersArr,
+      optimizerArr,
     });
 
     // return the model, loss, and status
@@ -75,6 +87,7 @@ class Index extends React.Component {
 
   trainAndPredict = async () => {
     const space = {
+      optimizer: hpjs.choice(['sgd', 'adam', 'adagrad', 'rmsprop']),
       numLayers: hpjs.quniform(1, 5, 1),
     };
 
@@ -102,7 +115,7 @@ class Index extends React.Component {
     this.setState({ numOptCalls });
     const trials = await hpjs.fmin(
       this.optFunction, space, hpjs.search.randomSearch, numOptCalls,
-      { rng: new hpjs.RandomState(64321), trainingData, outputData }
+      { rng: new hpjs.RandomState(54321), trainingData, outputData }
     );
 
     const opt = trials.argmin;
@@ -131,7 +144,7 @@ class Index extends React.Component {
 
   render() {
     const {
-      formattedPredictions, lossArr, numOptCalls, numLayersArr, // eslint-disable-line
+      formattedPredictions, lossArr, numOptCalls, numLayersArr, optimizerArr // eslint-disable-line
     } = this.state;
     console.log(lossArr);
     return (
@@ -144,6 +157,7 @@ class Index extends React.Component {
                 <TableRow>
                   <TableCell size='xsmall' scope='col' border='bottom'><b>Iteration</b></TableCell>
                   <TableCell size='xsmall' scope='col' border='bottom'><b># Layers</b></TableCell>
+                  <TableCell size='xsmall' scope='col' border='bottom'><b>Optimizer</b></TableCell>
                   <TableCell size='small' scope='col' border='bottom'><b>Loss</b></TableCell>
                 </TableRow>
               </TableHeader>
@@ -152,13 +166,16 @@ class Index extends React.Component {
                   <TableRow key={`loss_${index}`}>
                     <TableCell size='xsmall' scope='row'>{index + 1}</TableCell>
                     <TableCell size='xsmall' scope='row'>{numLayersArr[index]}</TableCell>
+                    <TableCell size='xsmall' scope='row'>{optimizerArr[index]}</TableCell>
                     <TableCell size='small' scope='row'>{e}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
             </Table>
             <Text>
-              Best # of Layers: {numLayersArr[numOptCalls]}
+              Best # of Layers: {numLayersArr[numOptCalls]} 
+              <br />
+              Best Optimizer: {optimizerArr[numOptCalls]}
             </Text>
             <Button
               label='Start Training'
