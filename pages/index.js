@@ -9,7 +9,7 @@ let predictions;
 const lossArr = [];
 const numLayersArr = [];
 const optimizerArr = [];
-const numOptCalls = 3;
+// const numOptCalls = 3;
 
 
 const TestHeader = ({ title }) => (
@@ -160,7 +160,7 @@ class Index extends React.Component {
           <Box direction='column' align='center' gap='xsmall' margin='small'>
             <Box direction='row' align='center' gap='xsmall'>
               <Text weight='bold'># of OptFunction calls: </Text>
-              <FormField>
+              <FormField style={{ maxWidth: '20%' }}>
                 <TextInput
                     size = 'small'
                     id='numOptCalls'
@@ -168,7 +168,9 @@ class Index extends React.Component {
                     placeholder={numOptCalls.toString()}
                     onKeyPress={(e) => {
                       if (e.key === 'Enter') {
+                        console.log('Enter pressed');
                         this.updateNumOptCalls();
+                        document.getElementById('numOptCalls').value = '';
                       }
                     }}
                   />
@@ -232,7 +234,7 @@ class Index extends React.Component {
               </TableBody>
             </Table>
             <Text>
-              Testing Loss: {lossArr[numOptCalls]}
+              Testing Loss: {lossArr.slice(-1)[0]}
             </Text>
           </Box>
         </Box>
