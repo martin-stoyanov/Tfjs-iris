@@ -9,7 +9,6 @@ let predictions;
 const lossArr = [];
 const numLayersArr = [];
 const optimizerArr = [];
-// const numOptCalls = 3;
 
 
 const TestHeader = ({ title }) => (
@@ -25,6 +24,7 @@ class Index extends React.Component {
       numLayersArr: [],
       optimizerArr: [],
       numOptCalls: 3,
+      optCallsTemp: 3,
     };
   }
 
@@ -32,7 +32,7 @@ class Index extends React.Component {
     console.log('updated');
     const numCalls = document.getElementById('numOptCalls').value;
     this.setState({
-      numOptCalls: numCalls, // eslint-disable-line react/no-unused-state
+      optCallsTemp: numCalls, // eslint-disable-line react/no-unused-state
     });
   }
 
@@ -118,11 +118,17 @@ class Index extends React.Component {
       item.species,
     ]);
 
-    console.log(`numLayers: ${this.state.numOptCalls}`);
+    const { optCallsTemp } = this.state;
+    this.setState({
+      lossArr: [], // reset training array every time train button clicked
+      formattedPredictions: [], // reset pred array every training session
+      numOptCalls: optCallsTemp, // eslint-disable-line react/no-unused-state
+    });
+    console.log(`numOptCalls: ${this.state.optCallsTemp}`);
 
     const trials = await hpjs.fmin(
-      this.optFunction, space, hpjs.search.randomSearch, this.state.numOptCalls,
-      { rng: new hpjs.RandomState(54321), trainingData, outputData }
+      this.optFunction, space, hpjs.search.randomSearch, this.state.optCallsTemp,
+      { trainingData, outputData }
     );
 
     const opt = trials.argmin;
@@ -146,14 +152,14 @@ class Index extends React.Component {
       formattedPredictions: formattedArray, // eslint-disable-line react/no-unused-state
     });
 
-    console.log(formattedArray);
+    // console.log(formattedArray);
   }
 
   render() {
     const {
-      formattedPredictions, lossArr, numOptCalls, numLayersArr, optimizerArr // eslint-disable-line
+      formattedPredictions, lossArr, numOptCalls, numLayersArr, optimizerArr, optCallsTemp // eslint-disable-line
     } = this.state;
-    console.log(lossArr);
+    // console.log(lossArr);
     return (
       <Grommet>
         <Box direction='row-responsive' justify='center' gap='medium'>
@@ -165,7 +171,7 @@ class Index extends React.Component {
                     size = 'small'
                     id='numOptCalls'
                     name='numOptCalls'
-                    placeholder={numOptCalls.toString()}
+                    placeholder={optCallsTemp.toString()}
                     onKeyPress={(e) => {
                       if (e.key === 'Enter') {
                         console.log('Enter pressed');
@@ -234,7 +240,7 @@ class Index extends React.Component {
               </TableBody>
             </Table>
             <Text>
-              Testing Loss: {lossArr.slice(-1)[0]}
+              Testing Loss: {lossArr[numOptCalls]}
             </Text>
           </Box>
         </Box>
