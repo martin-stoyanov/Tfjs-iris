@@ -181,10 +181,6 @@ class Index extends React.Component {
                     }}
                   />
               </FormField>
-              <Button
-                  label='Update'
-                  onClick={this.updateNumOptCalls}
-                />
             </Box>
             <Table>
               <TableHeader>
