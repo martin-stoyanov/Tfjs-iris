@@ -172,6 +172,7 @@ class Index extends React.Component {
                     id='numOptCalls'
                     name='numOptCalls'
                     placeholder={optCallsTemp.toString()}
+                    style={{ paddingBottom: '0px', paddingLeft: '20px'}}
                     onKeyPress={(e) => {
                       if (e.key === 'Enter') {
                         console.log('Enter pressed');
