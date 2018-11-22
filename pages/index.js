@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grommet, Box, FormField, Table, TableHeader, TableRow, TableCell, TableBody, Button, Text, TextInput } from 'grommet';
+import { Grommet, Box, FormField, Table, TableHeader, TableRow, TableCell, TableBody, Button, Text, TextInput, Anchor } from 'grommet';
 import * as tf from '@tensorflow/tfjs';
 import * as hpjs from 'hyperparameters';
 import iris from '../data/iris-training';
@@ -162,83 +162,105 @@ class Index extends React.Component {
     // console.log(lossArr);
     return (
       <Grommet>
-        <Box direction='row-responsive' justify='center' gap='medium'>
-          <Box direction='column' align='center' gap='xsmall' margin='small'>
-            <Box direction='row' align='center' gap='xsmall'>
-              <Text weight='bold'># of OptFunction calls: </Text>
-              <FormField style={{ maxWidth: '20%' }}>
-                <TextInput
-                    size = 'small'
-                    id='numOptCalls'
-                    name='numOptCalls'
-                    placeholder={optCallsTemp.toString()}
-                    style={{ paddingBottom: '0px', paddingLeft: '20px'}}
-                    onKeyPress={(e) => {
-                      if (e.key === 'Enter') {
-                        console.log('Enter pressed');
-                        this.updateNumOptCalls();
-                        document.getElementById('numOptCalls').value = '';
-                      }
-                    }}
-                  />
-              </FormField>
-            </Box>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableCell size='xsmall' scope='col' border='bottom'><b>Iteration</b></TableCell>
-                  <TableCell size='xsmall' scope='col' border='bottom'><b># Layers</b></TableCell>
-                  <TableCell size='xsmall' scope='col' border='bottom'><b>Optimizer</b></TableCell>
-                  <TableCell size='small' scope='col' border='bottom'><b>Loss</b></TableCell>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {lossArr.filter((e, index) => index < numOptCalls).map((e, index) => (
-                  <TableRow key={`loss_${index}`}>
-                    <TableCell size='xsmall' scope='row'>{index + 1}</TableCell>
-                    <TableCell size='xsmall' scope='row'>{numLayersArr[index]}</TableCell>
-                    <TableCell size='xsmall' scope='row'>{optimizerArr[index]}</TableCell>
-                    <TableCell size='small' scope='row'>{e}</TableCell>
+        <Box>
+          <Box direction='row-responsive' justify='center' gap='medium'
+            style={{ height: 'auto', minHeight: '100vh' }}>
+            <Box direction='column' align='center' gap='xsmall' margin='small'>
+              <Box direction='row' align='center' gap='xsmall'>
+                <Text weight='bold'># of OptFunction calls: </Text>
+                <FormField style={{ maxWidth: '20%' }}>
+                  <TextInput
+                      size = 'small'
+                      id='numOptCalls'
+                      name='numOptCalls'
+                      placeholder={optCallsTemp.toString()}
+                      style={{ paddingBottom: '0px', paddingLeft: '20px'}}
+                      onKeyPress={(e) => {
+                        if (e.key === 'Enter') {
+                          console.log('Enter pressed');
+                          this.updateNumOptCalls();
+                          document.getElementById('numOptCalls').value = '';
+                        }
+                      }}
+                    />
+                </FormField>
+              </Box>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableCell size='xsmall' scope='col' border='bottom'><b>Iteration</b></TableCell>
+                    <TableCell size='xsmall' scope='col' border='bottom'><b># Layers</b></TableCell>
+                    <TableCell size='xsmall' scope='col' border='bottom'><b>Optimizer</b></TableCell>
+                    <TableCell size='small' scope='col' border='bottom'><b>Loss</b></TableCell>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-            <Text>
-              Best # of Layers: {numLayersArr[numOptCalls]} 
-              <br />
-              Best Optimizer: {optimizerArr[numOptCalls]}
-            </Text>
-            <Button
-              label='Start Training'
-              onClick={this.trainAndPredict}
-              style={{ marginTop: '15px' }}
-            />
-          </Box>
-          <Box direction='column' align='center' gap='xsmall' margin='small'>
-            <Text weight='bold'>Test Predictions</Text>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  {['Setosa', 'Virginica', 'Versicolor', 'Actual'].map(title => (
-                    <TestHeader title={title} key={`title_${title}`} />
+                </TableHeader>
+                <TableBody>
+                  {lossArr.filter((e, index) => index < numOptCalls).map((e, index) => (
+                    <TableRow key={`loss_${index}`}>
+                      <TableCell size='xsmall' scope='row'>{index + 1}</TableCell>
+                      <TableCell size='xsmall' scope='row'>{numLayersArr[index]}</TableCell>
+                      <TableCell size='xsmall' scope='row'>{optimizerArr[index]}</TableCell>
+                      <TableCell size='small' scope='row'>{e}</TableCell>
+                    </TableRow>
                   ))}
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {formattedPredictions.map((e, index) => (
-                  <TableRow key={`predictions_${index}`}>
-                    {console.log(e[0])}
-                    <TableCell size='xxsmall' scope='row'>{(e[3][0] === 'setosa' ? e[0] < 0.5 ? <Text weight='bold' color='status-critical'>{e[0]}</Text> : <Text weight='bold'>{e[0]}</Text> : e[0])}</TableCell>
-                    <TableCell size='xxsmall' scope='row'>{(e[3][0] === 'virginica' ? e[1] < 0.5 ? <Text weight='bold' color='status-critical'>{e[1]}</Text> : <Text weight='bold'>{e[1]}</Text> : e[1])}</TableCell>
-                    <TableCell size='xxsmall' scope='row'>{(e[3][0] === 'versicolor' ? e[2] < 0.5 ? <Text weight='bold' color='status-critical'>{e[2]}</Text> : <Text weight='bold'>{e[2]}</Text> : e[2])}</TableCell>
-                    <TableCell size='xxsmall' scope='row'>{e[3]}</TableCell>
+                </TableBody>
+              </Table>
+              <Text>
+                Best # of Layers: {numLayersArr[numOptCalls]} 
+                <br />
+                Best Optimizer: {optimizerArr[numOptCalls]}
+              </Text>
+              <Button
+                label='Start Training'
+                onClick={this.trainAndPredict}
+                style={{ marginTop: '15px' }}
+              />
+            </Box>
+            <Box direction='column' align='center' gap='xsmall' margin='small'>
+              <Text weight='bold'>Test Predictions</Text>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    {['Setosa', 'Virginica', 'Versicolor', 'Actual'].map(title => (
+                      <TestHeader title={title} key={`title_${title}`} />
+                    ))}
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-            <Text>
-              Testing Loss: {lossArr[numOptCalls]}
-            </Text>
+                </TableHeader>
+                <TableBody>
+                  {formattedPredictions.map((e, index) => (
+                    <TableRow key={`predictions_${index}`}>
+                      {console.log(e[0])}
+                      <TableCell size='xxsmall' scope='row'>{(e[3][0] === 'setosa' ? e[0] < 0.5 ? <Text weight='bold' color='status-critical'>{e[0]}</Text> : <Text weight='bold'>{e[0]}</Text> : e[0])}</TableCell>
+                      <TableCell size='xxsmall' scope='row'>{(e[3][0] === 'virginica' ? e[1] < 0.5 ? <Text weight='bold' color='status-critical'>{e[1]}</Text> : <Text weight='bold'>{e[1]}</Text> : e[1])}</TableCell>
+                      <TableCell size='xxsmall' scope='row'>{(e[3][0] === 'versicolor' ? e[2] < 0.5 ? <Text weight='bold' color='status-critical'>{e[2]}</Text> : <Text weight='bold'>{e[2]}</Text> : e[2])}</TableCell>
+                      <TableCell size='xxsmall' scope='row'>{e[3]}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+              <Text>
+                Testing Loss: {lossArr[numOptCalls]}
+              </Text>
+            </Box>
+          </Box>
+          <Box align='center' justify='center' pad='xsmall' direction='row'
+            style = {{ height: '5vh', marginTop: '-5vh' }}>
+            <Button
+              primary={true}
+              color='light-1'
+              href='https://github.com/atanasster/hyperparameters'
+              target='_blank'
+            >
+              <Text>Hpjs git&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</Text>
+            </Button>
+            <Button
+              primary={true}
+              color='light-1'
+              href='https://github.com/martin-stoyanov/tfjs-iris'
+              target='_blank'
+            >
+              <Text>Site git</Text>
+            </Button>
           </Box>
         </Box>
       </Grommet>
