@@ -247,7 +247,7 @@ class Index extends React.Component {
             style = {{ height: '5vh', marginTop: '-5vh' }}>
             <Button
               primary={true}
-              color='light-1'
+              color='white'
               href='https://github.com/atanasster/hyperparameters'
               target='_blank'
             >
@@ -255,7 +255,7 @@ class Index extends React.Component {
             </Button>
             <Button
               primary={true}
-              color='light-1'
+              color='white'
               href='https://github.com/martin-stoyanov/tfjs-iris'
               target='_blank'
             >
