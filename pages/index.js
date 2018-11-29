@@ -245,22 +245,23 @@ class Index extends React.Component {
           </Box>
           <Box align='center' justify='center' pad='xsmall' direction='row'
             style = {{ height: '5vh', marginTop: '-5vh' }}>
-            <Button
+            <Anchor
               primary={true}
-              color='white'
+              color='black'
               href='https://github.com/atanasster/hyperparameters'
               target='_blank'
             >
-              <Text>Hpjs git&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</Text>
-            </Button>
-            <Button
+              <Text>Hpjs git</Text>
+            </Anchor>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <Anchor
+              color='black'
               primary={true}
-              color='white'
               href='https://github.com/martin-stoyanov/tfjs-iris'
               target='_blank'
             >
               <Text>Site git</Text>
-            </Button>
+            </Anchor>
           </Box>
         </Box>
       </Grommet>
